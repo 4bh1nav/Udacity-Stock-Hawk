@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
 
+import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 
@@ -75,8 +76,12 @@ public final class QuoteSyncJob {
                 String symbol = iterator.next();
 
                 Stock stock = quotes.get(symbol);
-                if (stock.getName() != null){
+                if (stock != null ){
                     StockQuote quote = stock.getQuote();
+
+                    if(quote.getPrice() == null || quote.getChange() == null || quote.getChangeInPercent() == null){
+                        continue;
+                    }
 
                     float price = quote.getPrice().floatValue();
                     float change = quote.getChange().floatValue();
@@ -112,7 +117,7 @@ public final class QuoteSyncJob {
                         @Override
                         public void run() {
                             Toast.makeText(context.getApplicationContext(),
-                                    "Stock not valid",
+                                    R.string.stock_not_vaid,
                                     Toast.LENGTH_SHORT).show();
                         }
                     });
