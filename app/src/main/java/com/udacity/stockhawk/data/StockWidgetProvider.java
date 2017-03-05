@@ -2,12 +2,14 @@ package com.udacity.stockhawk.data;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.widget.RemoteViews;
 
 import com.udacity.stockhawk.R;
+import com.udacity.stockhawk.sync.QuoteSyncJob;
 
 /**
  * Implementation of App Widget functionality.
@@ -48,6 +50,16 @@ public class StockWidgetProvider extends AppWidgetProvider {
         mView.setRemoteAdapter(widgetId, R.id.widgetCollectionList, intent);
 
         return mView;
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
+        if(intent.getAction().equalsIgnoreCase(QuoteSyncJob.ACTION_DATA_UPDATED)) {
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            ComponentName componentName = new ComponentName(context, StockWidgetProvider.class);
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetManager.getAppWidgetIds(componentName), R.id.widgetCollectionList);
+        }
     }
 }
 
